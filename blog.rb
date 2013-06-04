@@ -5,10 +5,11 @@ require 'redcarpet'
 set :bind, '0.0.0.0'
 set :port, 3000
 set :erb, layout_engine: :erb
+posts_dir = File.join('.', 'posts') 
 
 get '/' do
 	posts = []
-	Dir.new(File.join('.', 'views')).each do |f|
+	Dir.new(posts_dir).each do |f|
 		posts.push(f.gsub('.md', '')) if f.match(/\.md$/)	
 	end
 
@@ -17,7 +18,7 @@ end
 
 get '/post/*' do |p|
   str = ''
-	File.open File.join('.', 'posts', "#{p}.md") do |f|
+	File.open File.join(posts_dir, "#{p}.md") do |f|
     str = f.read
   end
 
