@@ -4,7 +4,6 @@ require 'redcarpet'
 
 set :bind, '0.0.0.0'
 set :port, 3000
-set :markdown, layout_engine: :erb
 set :erb, layout_engine: :erb
 
 get '/' do
@@ -18,7 +17,7 @@ end
 
 get '/post/*' do |p|
   str = ''
-	File.open File.join('.', 'views', "#{p}.md") do |f|
+	File.open File.join('.', 'posts', "#{p}.md") do |f|
     str = f.read
   end
 
@@ -29,5 +28,6 @@ get '/post/*' do |p|
                                      :no_intra_emphasis => true,
                                      :fenced_code_blocks => true)
   html = markdown.render str
-  erb :post, locals: { content: html } 
+  erb :post, locals: { content: html, layout: true } 
+
 end
