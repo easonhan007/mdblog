@@ -22,7 +22,7 @@ get '/post/*' do |p|
     str = f.read
   end
 
-  render = renderer = Redcarpet::Render::HTML.new(:prettify => true)
+  render = Redcarpet::Render::HTML.new(:prettify => true)
   markdown = Redcarpet::Markdown.new(render, 
                                      :autolink => true, 
                                      :space_after_headers => true,
