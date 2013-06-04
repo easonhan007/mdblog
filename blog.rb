@@ -11,7 +11,7 @@ posts_dir = File.join('.', 'posts')
 get '/' do
 	posts = []
 	Dir.new(posts_dir).each do |f|
-		posts.push(f.gsub('.md', '')) if f.match(/\.md$/)	
+		posts.push(f.encode('utf-8').gsub('.md', '')) if f.match(/\.md$/)	
 	end
 
   erb :index, locals: { list: posts }
