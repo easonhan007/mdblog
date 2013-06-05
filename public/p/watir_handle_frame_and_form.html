@@ -1,0 +1,185 @@
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8">
+    <link type="text/css" rel="stylesheet" href="/css/bootstrap.min.css">
+    <title>乙醇的blog</title>
+  </head>
+  <body>
+    <div id="content">
+      <div class="container">
+        <div class="page-header">
+          <h3>乙醇的blog<h3>
+        </div>
+          <p class="text-right"><a href="/">返回主页</a></p>
+<h3>上一节我们讲了如何利用watir去定位页面上的简单元素，这一节我们介绍一些更加复杂的元素的定位方法。</h3>
+
+<h4>Forms</h4>
+
+<p>我们知道，如果form有submit按钮的话，我们可以点击submit按钮来提交form。其html如下所示：</p>
+
+<pre><code class="prettyprint">&lt;form action = &quot;example.php&quot; method = &quot;post&quot;&gt;
+
+    &lt;input type = &quot;submit&quot; id = &quot;sub&quot; value = &quot;Submit&quot; \&gt;
+
+&lt;/form&gt;
+</code></pre>
+
+<p>我们直接点击“提交”按钮既可将数据提交到后台。具体代码如下：</p>
+
+<pre><code class="prettyprint">Ie.button(:id, &#39;sub&#39;).click
+</code></pre>
+
+<p>不过在有些时候，我们可能碰到一些没有submit按钮的form，例如下面的html代码：</p>
+
+<pre><code class="prettyprint">&lt;form id=&quot;searchForm&quot; action=&quot;http://www.example.com/v3/example/search/get&quot; method=&quot;get&quot;&gt;
+
+    &lt;div title=&quot;搜索&quot; onclick=&quot;search();&quot; id=&quot;searchButtonDiv&quot;&gt;&lt;/div&gt;
+
+    &lt;input value=&quot;关键词或完整ID&quot; id=&quot;dataSearchKeyword&quot; class=&quot;secondary&quot; name=&quot;keyword&quot;&gt;
+
+&lt;/form&gt;
+</code></pre>
+
+<p>这个form就是没有submit按钮。这时候我们可以通过如下的方法来提交该form。</p>
+
+<ul>
+<li><p>通过id属性：</p>
+
+<p>Ie.form(:id, &#39;searchFrom&#39;)</p></li>
+<li><p>通过name属性：</p></li>
+</ul>
+
+<p>如果form有name的话，我们可以这样做：</p>
+
+<pre><code class="prettyprint">Ie.form(:name, &#39;my_name&#39;)
+</code></pre>
+
+<ul>
+<li>通过action属性：</li>
+</ul>
+
+<p>如上面所示的html代码，我们可以通过action属性来进行提交。</p>
+
+<pre><code class="prettyprint">Ie.form(:action, /search\/get/) #正则表达式是支持的
+</code></pre>
+
+<ul>
+<li>通过method属性：</li>
+</ul>
+
+<p>注意，由于页面上可能有很多method相同的form，在这时watir将定位到第1个method属性相符的form对象。</p>
+
+<pre><code class="prettyprint">Ie.form(:method, &#39;get&#39;)
+</code></pre>
+
+<ul>
+<li>其他方法：</li>
+</ul>
+
+<p>通过观察上面的html，我们发现点击这个<code class="prettyprint">&lt;div title=”搜索” onclick=”search();” id=”searchButtonDiv”&gt;&lt;/div&gt;</code> div的时候，js将触发1个<code class="prettyprint">search()</code>方法，该方法就的作用就是提交form，因此我们可以直接点击这个div来进行提交。具体代码如下：</p>
+
+<pre><code class="prettyprint">Ie.div(:id, &#39;searchButtonDiv&#39;).click
+</code></pre>
+
+<h4>Frames</h4>
+
+<p>Frame是个令人头痛和恶心的东西————跟中国足球一样，同样也跟怀孕了一样。我们访问frame时候经常会有access denied错误，这个错误往往令我们焦急、心烦、恼火、放弃。另外有时候，我们总是定位不到某个元素，在苦苦调试了许久后，我们才悲催的发现，原来该元素是在某frame中。</p>
+
+<p>在web自动化测试中，frame是难点，但绝不是绊脚石。在掌握一些方法后，使用frame会变得并不困难，下面我们将详细讲解。</p>
+
+<h5>查看页面上所有的frame：</h5>
+
+<p>在定位frame之前，我们可以使用下面的方法来查看页面上所有的frame，这在调试时很有用。</p>
+
+<pre><code class="prettyprint">ie.show_frames
+</code></pre>
+
+<p>该方法最好在irb中使用，如下所示：</p>
+
+<pre><code class="prettyprint">irb(main):009:0&gt; ie.show_frames
+
+there are 2 frames
+
+frame  index: 1 name: menu
+
+frame  index: 2 name: main
+
+=&gt; 0..1
+</code></pre>
+
+<ul>
+<li>通过name访问：</li>
+</ul>
+
+<p>我们可以直接通过name属性来访问frame</p>
+
+<pre><code class="prettyprint">ie.frame(:name, &#39;my_frame&#39;)
+</code></pre>
+
+<p>如果该frame上有1个link，那么可以通过frame去访问该link</p>
+
+<pre><code class="prettyprint">ie.frame(:name, &#39;my_frame&#39;).link(:id, &#39;my_link&#39;).click
+</code></pre>
+
+<ul>
+<li><p>通过id访问：</p>
+
+<p>ie.frame(:id &#39;my_frame&#39;)</p></li>
+<li><p>通过src访问：</p></li>
+</ul>
+
+<p>Frame是支持src属性的访问的。</p>
+
+<pre><code class="prettyprint">ie.frame(:src, &#39;index.htm&#39;)
+</code></pre>
+
+<ul>
+<li>通过index访问：</li>
+</ul>
+
+<p>当你所访问的frame没有id,name等信息时，也可以通过index属性来访问。</p>
+
+<pre><code class="prettyprint">ie.frame(:index,1) #这表示访问页面上第1个frame。
+</code></pre>
+
+<ul>
+<li>嵌套的frame：</li>
+</ul>
+
+<p>Frame是可以嵌套的，在实际工作中，我们经常会被嵌套的frame弄得痛苦不堪。我们经常会反复的去定位某个frame，在将所有frame的属性都实验了一遍后，我们发现该frame还是无法定位。这种情况往往是因为嵌套的frame造成的。我们不能越过父frame去直接访问子frame。嵌套的frame支持以如下的方式访问。</p>
+
+<pre><code class="prettyprint">ie.frame(:name, &#39;my_frame&#39;)
+</code></pre>
+
+<ul>
+<li>关于access denied：</li>
+</ul>
+
+<p>万恶的access denied是因为IE防止XSS攻击造成的。</p>
+
+<p>具体解决方法如下：</p>
+
+<ul>
+<li>直接使用ie.goto(“your _frame_url”)来访问Frame的url；</li>
+<li>将你需要访问的url加入IE的信任地址；</li>
+<li>在host文件中为你的访问的地址取个别名，例如 192.168.10.32 foosystem。这样的 话使用foosystem来替代192.168.10.32进行访问既可；</li>
+<li>如果上述方法都不管用，那么直接关掉告警吧。具体代码如下：
+ie.logger.level = Logger::ERROR</li>
+</ul>
+
+<script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
+<p class="text-right"><a href="/">返回主页</a></p>
+
+      </div>
+    </div>
+    <div id="footer">
+      <div class="container">
+				<p class="text-warning">本站文章一般来说谢绝转载，如需转载，请征得本人同意,并注明作者是乙醇。</p>
+				<p class="muted">联系乙醇 [watircn#gmail.com] QQ群121079522</p>
+        <p class="muted credit">
+          <a href="http://easonhan007.github.io/">乙醇 on github</a>
+        </p>
+      <div>
+    </div>
+  </body>
+</html>

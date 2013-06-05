@@ -1,0 +1,99 @@
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8">
+    <link type="text/css" rel="stylesheet" href="/css/bootstrap.min.css">
+    <title>乙醇的blog</title>
+  </head>
+  <body>
+    <div id="content">
+      <div class="container">
+        <div class="page-header">
+          <h3>乙醇的blog<h3>
+        </div>
+          <p class="text-right"><a href="/">返回主页</a></p>
+<h3>Ruby设计模式之策略模式一： 基本的策略模式</h3>
+
+<p>模板模式固然不错，但其还是有一些缺陷的。比如其实现依赖于继承并且缺足够的灵活性。在这时候我们就需要找到一个更加优化的解决方案——策略模式。</p>
+
+<p>下面是使用策略模式实现的Report模板</p>
+
+<pre><code class="prettyprint">#encoding: utf-8
+
+class Formatter
+    def output_report title, text
+        raise &#39;can not call Abstract method&#39;    
+    end
+end
+
+class HTMLFormatter &lt; Formatter
+    def output_report title, text
+        puts &#39;&lt;html&gt;&#39;
+        puts &#39;    &lt;head&gt;&#39;
+        puts &#39;        &lt;title&gt;&#39; + title + &#39;&lt;/title&gt;&#39;
+        puts &#39;    &lt;/head&gt;&#39;
+        puts &#39;    &lt;body&gt;&#39;
+        text.each do |line|
+            puts &quot;&lt;p&gt;#{line}&lt;/p&gt;&quot;
+        end
+        puts &#39;    &lt;/body&gt;&#39;
+        puts &#39;&lt;/html&gt;&#39;
+    end
+end
+
+class PlainTextFormatter &lt; Formatter
+    def output_report title, text
+        puts &#39;******** &#39; + title + &#39; ********&#39;
+        text.each do |line|
+            puts line
+        end
+    end
+end
+
+class Reporter
+    attr_reader :title, :text
+    attr_accessor :formater
+
+    def initialize formater
+        @title = &#39;My Report&#39;
+        @text = [&#39;This is my report&#39;, &#39;Please see the report&#39;, &#39;It is ok&#39;]
+        @formater = formater
+    end
+
+    def output_report
+        @formater.output_report @title, @text
+    end
+end
+
+Reporter.new(HTMLFormatter.new).output_report
+Reporter.new(PlainTextFormatter.new).output_report
+</code></pre>
+
+<p>GOF将Strategy模式称之为__pull the algorithm out  into a separate object__，其基本理念就是实现一系列strategies对象，这些对象全都实现相同的功能。在上面的例子中这些strategies对象的功能就是输入报告。</p>
+
+<p>Strategies对象除了实现相同功能之外，还需要定义统一的接口。上面的例子里就是实现了output_report方法。</p>
+
+<p>使用这些Strategies的类被GOF称之为context。context可以调用任意的strategies，在context看来这些strategies并没有什么不一样，因为它们都实现了同样的功能。不过选择不同的strategies还是有些许不同的。在上面的例子里，选择HTMLFormatter可以输出HTML报告，而选择PlainTextFormatter则输入另一种风格的报告。如果我们实现一个住房公积金计算器，那么我们可以实现多个不同的strategy，1个strategy用来实现深圳的公积金算法，1个实现上海的算法，1个实现北京的算法如此类推。</p>
+
+<h4>策略模式有如下的优点</h4>
+
+<ul>
+<li><p>策略模式可以分离不同算法的代码，而且context不需要知道任何有关strategy的实现细节，其只需要调用strategy所定义的接口既可。</p></li>
+<li><p>另外在context中，切换strategy的成本低廉且灵活。 </p></li>
+</ul>
+
+<script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
+<p class="text-right"><a href="/">返回主页</a></p>
+
+      </div>
+    </div>
+    <div id="footer">
+      <div class="container">
+				<p class="text-warning">本站文章一般来说谢绝转载，如需转载，请征得本人同意,并注明作者是乙醇。</p>
+				<p class="muted">联系乙醇 [watircn#gmail.com] QQ群121079522</p>
+        <p class="muted credit">
+          <a href="http://easonhan007.github.io/">乙醇 on github</a>
+        </p>
+      <div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,94 @@
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8">
+    <link type="text/css" rel="stylesheet" href="/css/bootstrap.min.css">
+    <title>乙醇的blog</title>
+  </head>
+  <body>
+    <div id="content">
+      <div class="container">
+        <div class="page-header">
+          <h3>乙醇的blog<h3>
+        </div>
+          <p class="text-right"><a href="/">返回主页</a></p>
+<h1>使用rautomation进行windows窗体的自动化测试</h1>
+
+<p>今天在本地的gem list中发现了1个叫做rautomation的扩展，仔细一看原来这是个使用watir的语法进行windows程序测试的工具库，不敢独享，略志一二。</p>
+
+<h3>首先看一下rautomation的简介</h3>
+
+<blockquote>
+<p>RAutomation is a small and easy to use library for helping out to automate windows and their controls for automated testing.
+RAutomation是个小巧易用的工具库，其主要用来进行windows窗体和控件的自动化测试工作。</p>
+</blockquote>
+
+<h3>RAutomation的特点</h3>
+
+<ul>
+<li>Easy to use and user-friendly API (inspired by Watir <a href="http://www.watir.com">http://www.watir.com</a>) <strong>易用的watir like API</strong></li>
+<li>Cross-platform compatibility <strong>跨平台</strong></li>
+<li>Easy extensibility - with small scripting effort it&#39;s possible to add support for not yet supported platforms or technologies <strong>易扩展</strong></li>
+</ul>
+
+<h3>RAutomation的用法</h3>
+
+<pre><code class="prettyprint">require &quot;rautomation&quot;
+
+# 通过匹配部分标题来获取窗口
+window = RAutomation::Window.new(:title =&gt; /part of the title/i)
+window.exists? # =&gt; true
+window.title # =&gt; &quot;blah blah part Of the title blah&quot;
+window.text # =&gt; &quot;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec ultricies...&quot;
+
+# 控件操作
+window.text_field(:class =&gt; &quot;Edit&quot;, :index =&gt; 0).set &quot;hello, world!&quot;
+button = window.button(:text =&gt; &quot;&amp;Save&quot;)
+button.exists? # =&gt; true
+button.click
+
+# 获取当前所有窗口的句柄
+all_windows = RAutomation::Window.windows
+all_windows.each {|window| puts window.hwnd}
+
+# 根据标题匹配所有窗口
+window = RAutomation::Window.new(:title =&gt; /part of the title/i)
+windows = window.windows
+puts windows.size # =&gt; 2
+windows.map {|window| window.title } # =&gt; [&quot;part of the title 1&quot;, &quot;part of the title 2&quot;]
+window.windows(:title =&gt; /part of other title/i) # =&gt; all windows with matching specified title
+
+# 遍历窗口上所有的button控件
+window.buttons.each {|button| puts button.value}
+window.buttons(:value =&gt; /some value/i).each {|button| puts button.value}
+
+# 使用autoit adapter来定位和操作窗口
+# 注意：需要注册AutoitX的DLL
+window2 = RAutomation::Window.new(:title =&gt; &quot;Other Title&quot;, :adapter =&gt; :autoit) # use AutoIt adapter
+# 使用autoit的原生方法来操作控件
+# use adapter&#39;s (in this case AutoIt&#39;s) internal methods not part of the public API directly
+window2.WinClose(&quot;[TITLE:Other Title]&quot;)
+</code></pre>
+
+<h3>RAutomation的安装</h3>
+
+<p>安装了watir 1.9后该扩展自动安装。另外也可以使用下面的命令进行安装</p>
+
+<pre><code class="prettyprint">gem install rautomation
+</code></pre>
+
+<script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
+<p class="text-right"><a href="/">返回主页</a></p>
+
+      </div>
+    </div>
+    <div id="footer">
+      <div class="container">
+				<p class="text-warning">本站文章一般来说谢绝转载，如需转载，请征得本人同意,并注明作者是乙醇。</p>
+				<p class="muted">联系乙醇 [watircn#gmail.com] QQ群121079522</p>
+        <p class="muted credit">
+          <a href="http://easonhan007.github.io/">乙醇 on github</a>
+        </p>
+      <div>
+    </div>
+  </body>
+</html>

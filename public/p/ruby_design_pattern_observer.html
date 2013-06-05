@@ -1,0 +1,116 @@
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8">
+    <link type="text/css" rel="stylesheet" href="/css/bootstrap.min.css">
+    <title>乙醇的blog</title>
+  </head>
+  <body>
+    <div id="content">
+      <div class="container">
+        <div class="page-header">
+          <h3>乙醇的blog<h3>
+        </div>
+          <p class="text-right"><a href="/">返回主页</a></p>
+<p>ruby设计模式之观察者模式1————简单的观察者模式</p>
+
+<p>观察者模式应该是最容易理解的设计模式了。</p>
+
+<p>考虑这个例子。作为雇员的你当工资发生改变的时候你会想到什么？</p>
+
+<p>请朋友吃饭？给女朋友买衣服？给自己买台Iphone4？</p>
+
+<p>很可惜，你所增加的那点可怜的工资恐怕难以支持你做以上这些事情吧。</p>
+
+<p>当你工资增加之后，你的个人所得税理所当然的增加了；你的住房公积金提高了；你的社保不出意外也要多交了。剩下来的那点应该也不够塞牙了。</p>
+
+<p>这个理应是喜剧的杯具中实际上包含了观察者模式的基本概念。在这个例子中，社保局、税务局实际上是你的**观察者**。当你的工资发生变化时，你(一般来说是你的雇主)会**通知**有关部门，以便有关部门能够根据你的收入调整税收或社保政策。</p>
+
+<p>下面的代码(使用ruby1.9实现，1.8y应该有问题)比较简单的实现了上面这个杯具：</p>
+
+<pre><code class="prettyprint">#encoding: utf-8
+class Tester
+    attr_reader :name, :title, :salary
+    def initialize name, title, salary
+        @name = name
+        @title = title
+        @salary = salary
+        @observers = []
+    end 
+
+    def salary=new_salary
+        @salary = new_salary
+        notify_observers
+    end
+
+    def notify_observers
+        @observers.each do |ob|
+            ob.update self
+        end
+    end
+
+    def add_observer ob
+        @observers &lt;&lt; ob
+    end
+
+    def delete_observer ob
+        @observers.delete ob
+    end
+end
+
+class YouKnow
+    def update changed_tester
+        puts &quot;#{self.class.to_s} 盯上 #{changed_tester.name}了&quot;.encode(&#39;gb2312&#39;)
+        puts &quot;#{changed_tester.name}的工资变成#{changed_tester.salary}了&quot;.encode(&#39;gb2312&#39;)
+        puts &quot;#{changed_tester.name}要多交......&quot;.encode(&#39;gb2312&#39;)
+    end
+end
+
+class I税务局I &lt; YouKnow;end
+class I社保局I &lt; YouKnow;end
+
+you = Tester.new(&#39;你&#39;, &#39;&#39;, 2000)
+
+you.add_observer(I税务局I.new)
+you.salary = 5000
+</code></pre>
+
+<p>上面的例子将输出:</p>
+
+<blockquote>
+<p>ruby observer.rb
+I税务局I 盯上 你了
+你的工资变成5000了
+你要多交......
+Exit code: 0</p>
+</blockquote>
+
+<p>在上面的代码中，类Tester实现了观察者模式。</p>
+
+<p>Tester维护了1个叫做@observers的数组，该数组用来保存所有的观察者实例。</p>
+
+<p>在Tester中最重要的1个方法是salary=new_salary。当Tester的salary发生变化时，notify_observers方法将会被调用。</p>
+
+<p>notify_observers方法会遍历所有的observer，然后调用observer的update方法。</p>
+
+<p>observer的update方法以Tester的实例作为参数，这样做主要是为了能够更方便的访问Tester的属性如name，title。</p>
+
+<p>于是简而言之Tester类会有一系列的观察者，这些观察者对Tester的一些属性感兴趣，在这里是salary。于是当salary发生改变时，Tester会通知各个观察者去update Tester状态。在这个例子里就是去update Tester的salary属性。</p>
+
+<p>这就是观察者模式的核心理念。观察者模式不是观察者真正的去观察被观察者，而是被观察者在发生改变的时候主动去通知被观察者。</p>
+
+<script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
+<p class="text-right"><a href="/">返回主页</a></p>
+
+      </div>
+    </div>
+    <div id="footer">
+      <div class="container">
+				<p class="text-warning">本站文章一般来说谢绝转载，如需转载，请征得本人同意,并注明作者是乙醇。</p>
+				<p class="muted">联系乙醇 [watircn#gmail.com] QQ群121079522</p>
+        <p class="muted credit">
+          <a href="http://easonhan007.github.io/">乙醇 on github</a>
+        </p>
+      <div>
+    </div>
+  </body>
+</html>

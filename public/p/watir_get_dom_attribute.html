@@ -1,0 +1,87 @@
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8">
+    <link type="text/css" rel="stylesheet" href="/css/bootstrap.min.css">
+    <title>乙醇的blog</title>
+  </head>
+  <body>
+    <div id="content">
+      <div class="container">
+        <div class="page-header">
+          <h3>乙醇的blog<h3>
+        </div>
+          <p class="text-right"><a href="/">返回主页</a></p>
+<h1>watir中如何获取dom的属性</h1>
+
+<p>下面代码演示了如何在waitr中获取dom属性。</p>
+
+<p>在进行自动化测试时，我们经常要获取这样的一些信息：</p>
+
+<ul>
+<li>某dom元素的class值，用以判断该dom元素是否具有正确的样式；</li>
+<li>某dom元素的style属性，用以判断该dom元素是否具有正确的样式；</li>
+<li>通过dom元素的事件属性，例如onclick onfocus等来定位识别特定元素；</li>
+</ul>
+
+<p>以上三种情况我们分别讨论。</p>
+
+<h3>获取dom元素的class值：</h3>
+
+<p>考虑如下的html代码
+    <a class = "classA" href = "www.17test.info">乙醇的blog</a></p>
+
+<p>获取class属性的ruby代码</p>
+
+<pre><code class="prettyprint">ie.link(:link, &#39;classA&#39;).class_name
+</code></pre>
+
+<p>注意这里是class_name属性</p>
+
+<hr>
+
+<h3>获取dom元素的style属性</h3>
+
+<p>考虑如下的html代码</p>
+
+<pre><code class="prettyprint">&lt;a id = &quot;idA&quot; href = &quot;www.17test.info&quot; style = &quot;width:200px&quot;&gt;乙醇的blog&lt;/a&gt;
+</code></pre>
+
+<p>获取width大小的ruby代码</p>
+
+<pre><code class="prettyprint">width = ie.link(:id, &#39;idA&#39;).attribute_value(&#39;style&#39;).invoke(&#39;width&#39;)
+</code></pre>
+
+<hr>
+
+<h3>通过dom元素的事件属性，例如onclick onfocus等来定位识别特定元素</h3>
+
+<p>考虑下面的html代码：</p>
+
+<pre><code class="prettyprint">&lt;div onclick = &quot;do_event()&quot;&gt;&lt;/div&gt;
+&lt;div&gt;&lt;/div&gt;
+&lt;div&gt;&lt;/div&gt;
+</code></pre>
+
+<p>我们如果要定位有onclick属性的div，我们可以这样做：</p>
+
+<pre><code class="prettyprint">ie.divs.each do |d|
+    return d if d.html.contains?(&#39;onclick&#39;)
+end
+</code></pre>
+
+<script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
+<p class="text-right"><a href="/">返回主页</a></p>
+
+      </div>
+    </div>
+    <div id="footer">
+      <div class="container">
+				<p class="text-warning">本站文章一般来说谢绝转载，如需转载，请征得本人同意,并注明作者是乙醇。</p>
+				<p class="muted">联系乙醇 [watircn#gmail.com] QQ群121079522</p>
+        <p class="muted credit">
+          <a href="http://easonhan007.github.io/">乙醇 on github</a>
+        </p>
+      <div>
+    </div>
+  </body>
+</html>
